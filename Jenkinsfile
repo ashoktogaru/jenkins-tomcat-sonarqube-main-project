@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ashoktogaru/jenkins-tomcat-sonarqube-main-project.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/kmehaboobsubhani/javaWorking.git']]])
             }
         }        
         stage('Clean') {
@@ -64,17 +64,38 @@ pipeline {
                 }  
               }
         
-        
+        stage('Upload'){
+            steps{
+                rtUpload (
+                 serverId:"Artifactory" ,
+                  spec: '''{
+                   "files": [
+                      {
+                      "pattern": "*.war",
+                      "target": "libs-snapshot-local"
+                      }
+                            ]
+                           }''',
+                        )
+            }
+        }
+        stage ('Publish build info') {
+            steps {
+                rtPublishBuildInfo (
+                    serverId: "Artifactory"
+                )
+            }
+        }
             
         stage('Stage-9 : Deployment - Deploy a Artifact devops-3.0.0-SNAPSHOT.war file to Tomcat Server') { 
             steps {
-                sh 'curl -u admin:redhat@123 -T target/**.war "http://4.168.232.209:8080/manager/text/deploy?path=/ashok&update=true"'
+                sh 'curl -u admin:redhat@123 -T target/**.war "http://44.199.205.16:8080/manager/text/deploy?path=/subhani&update=true"'
             }
         } 
   
           stage('Stage-10 : SmokeTest') { 
             steps {
-                sh 'curl --retry-delay 10 --retry 5 "http://4.168.232.209:8080/ashok"'
+                sh 'curl --retry-delay 10 --retry 5 "http://44.199.205.16:8080/subhani"'
             }
         }
         
