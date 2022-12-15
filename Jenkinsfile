@@ -51,7 +51,7 @@ pipeline {
               steps{
                       script{
                       withSonarQubeEnv('sonarserver') { 
-                      sh "mvn sonar:sonar"
+                      sh "mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=bharat123"
                        }
                     
 		    sh "mvn clean install"
