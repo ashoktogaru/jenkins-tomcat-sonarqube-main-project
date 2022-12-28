@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+	    stage('Stage-0 : Static Code Analysis Using SonarQube') { 
+            steps {
+               sh 'mvn clean verify sonar:sonar -DskipTests'
+            }
+        }
         stage('checkout') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ashoktogaru/jenkins-tomcat-sonarqube-main-project.git']]])
