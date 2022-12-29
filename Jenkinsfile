@@ -1,70 +1,69 @@
 pipeline {
-    agent any
+    agent any 
+    tools {
+         maven 'maven'
+            jdk 'java'
+    }
     stages {
-	    stage('Stage-0 : Static Code Analysis Using SonarQube') { 
+
+         stage('Stage-0 : Static Code Analysis Using SonarQube') { 
+             steps {
+                 sh 'mvn clean verify sonar:sonar -DskipTests'
+             }
+         }
+
+        stage('Stage-1 : Clean') { 
             steps {
-               sh 'mvn clean verify sonar:sonar -DskipTests'
+                sh 'mvn clean'
             }
         }
-        stage('checkout') {
+         stage('Stage-2 : Validate') { 
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/ashoktogaru/jenkins-tomcat-sonarqube-main-project.git']]])
-            }
-        }        
-        stage('Clean') {
-            steps {
-               sh "mvn -Dmaven.test.failure.ignore=true clean"
+                sh 'mvn validate'
             }
         }
-        
-        stage('Validate') {
+         stage('Stage-3 : Compile') { 
             steps {
-                sh "mvn validate"
+                sh 'mvn compile'
             }
         }
-        
-        stage('Compile') {
+         stage('Stage-4 : Test') { 
             steps {
-                sh ('mvn compile');
+                sh 'mvn test -DskipTests'
             }
         }
-        
-        stage('Test') {
+          stage('Stage-5 : Install') { 
             steps {
-                sh ('mvn test');
+                sh 'mvn install -DskipTests'
             }
         }
-        
-        stage('Package') {
+          stage('Stage-6 : Verify') { 
             steps {
-                sh ('mvn package');
+                sh 'mvn verify -DskipTests'
             }
         }
-        
-        stage('Verify') {
+          stage('Stage-7 : Package') { 
             steps {
-                sh ('mvn verify');
+                sh 'mvn package -DskipTests'
             }
         }
-	 stage('Install') {
+          stage('Stage-8 : Deploy an Artifact to Artifactory Manager i.e. Nexus/Jfrog') { 
             steps {
-                sh ('mvn install');
+                sh 'mvn deploy -DskipTests'
             }
         }
-           
-        stage('Stage-9 : Deployment - Deploy a Artifact devops-3.0.0-SNAPSHOT.war file to Tomcat Server') { 
+          stage('Stage-9 : Deployment - Deploy a Artifact devops-3.0.0-SNAPSHOT.war file to Tomcat Server') { 
             steps {
-                sh 'curl -u admin:redhat@123 -T target/**.war "http://44.199.205.16:8080/manager/text/deploy?path=/subhani&update=true"'
+                sh 'curl -u chethan:Chethan@2222 -T target/**.war "http://20.198.106.23:8080/manager/text/deploy?path=/maheshbabu&update=true"'
             }
         } 
   
           stage('Stage-10 : SmokeTest') { 
             steps {
-                sh 'curl --retry-delay 10 --retry 5 "http://44.199.205.16:8080/subhani"'
+                sh 'curl --retry-delay 10 --retry 5 "http://20.198.106.23:8080/maheshbabu"'
             }
         }
-        
-       
-          
+
+  
     }
 }
