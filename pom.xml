@@ -9,8 +9,8 @@
   <url>http://maven.apache.org</url>
    <properties>
   <sonar.organization>ashoktogaru</sonar.organization>
-  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   <sonar.productkey>bharat1016</sonar.productkey>
+  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   <sonar.login>c17655ec69560e1998011c1ee9b73fe36cadbd01</sonar.login>
   </properties>
   <dependencies>
